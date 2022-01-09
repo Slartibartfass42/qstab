@@ -1,5 +1,5 @@
+import random as rand
 import numpy as np
-import galois
 
 # Returns the kth pair (e_k, f_k) of the standard symplectic basis.
 # k goes from 0 to n-1
@@ -164,3 +164,9 @@ def find_symplectic_matrix(k, n, GF):
             m[i] = transvect(m[i], t)
         m = m.transpose()
         return m
+
+# Returns random symplectic matrix.
+def get_random_symplectic(n, GF):
+    ord = get_group_order(n, GF)
+    k = rand.randrange(ord)
+    return find_symplectic_matrix(k, n, GF)
