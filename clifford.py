@@ -20,8 +20,6 @@ class Weyl:
             while pq[0] == 0 and pq[1] == 0:
                 pq = np.random.randint(0, GF.order, 2, dtype=int)
             v[i:i+2] = pq
-        w = Weyl(v)
-
         return Weyl(v.view(GF))
 
     def __mul__(self, other):
