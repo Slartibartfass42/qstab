@@ -12,7 +12,7 @@ class Weyl:
     @staticmethod
     def random(n, GF, weight=-1):
         if weight < 0:
-            weight = n
+            weight = rand.randint(0, n)
         v = np.zeros(2 * n, dtype=int)
         for _ in range(weight):
             i = rand.randrange(0, 2 * n, 2)
