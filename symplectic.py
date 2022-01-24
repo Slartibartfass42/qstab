@@ -171,9 +171,9 @@ def get_random_symplectic(n, GF):
     k = rand.randrange(ord)
     return find_symplectic_matrix(k, n, GF)
 
-# Embeds a given symplectic s of dimension 2 n into a space of dimension
-# 2 n_embed with n_embed >= n, such that it acts on n chosen sites.
-def embed_symplectic(s, n_embed, *sites):
+# Embeds a given symplectic s of dimension 2n into a space of dimension
+# 2n_embed with n_embed >= n, such that it only acts on n chosen sites.
+def embed_symplectic(s, n_embed, sites):
     n = len(sites)
     if n != len(s) // 2:
         raise RuntimeError("Number of sites has to match with n = len(s)/2!")
