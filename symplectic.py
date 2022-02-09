@@ -171,21 +171,26 @@ def get_random_symplectic(n, GF):
     k = rand.randrange(ord)
     return find_symplectic_matrix(k, n, GF)
 
-# Embeds a given symplectic s of dimension 2n into a space of dimension
-# 2n_embed with n_embed >= n, such that it only acts on n chosen sites.
-def embed_symplectic(s, n_embed, sites):
-    n = len(sites)
-    if n != len(s) // 2:
-        raise RuntimeError("Number of sites has to match with n = len(s)/2!")
-    if n_embed < n:
-        raise RuntimeError \
-            ("n of embedded symplectic may not be larger than n_embed!")
-    GF = type(s)
-    s_embed = GF.Identity(2 * n_embed)
-    for i in range(n):
-        i_embed = sites[i]
-        for j in range(n):
-            j_embed = sites[j]
-            s_embed[2*i_embed:2*i_embed+2, 2*j_embed:2*j_embed+2] \
-                = s[2*i:2*i+2, 2*j:2*j+2]
-    return s_embed
+# For given tuples of symplectics of size 2n and sites of hyperbolic pairs in a
+# 2n_embed dimensional space, this embeds the former into a symplectic of
+# dimension 2n_embed with n_embed >= \sum n such that they each only act on the
+# the specified sites. 
+def embed_symplectics(n_embed, GF, *symp_sites):
+    symp_embed = GF.Identity(2 * n_embed)
+    n_free = n_embed
+    for (symp, sites) in symp_sites:
+        n = len(sites)
+        if n != len(symp) // 2:
+            raise RuntimeError \
+                ("Number of sites has to match with n = len(symp)/2!")
+        if n_free < n:
+            raise RuntimeError \
+                ("Not enough remaining sites to embed symplectic!")
+        for i in range(n):
+            i_embed = sites[i]
+            for j in range(n):
+                j_embed = sites[j]
+                symp_embed[2*i_embed:2*i_embed+2, 2*j_embed:2*j_embed+2] \
+                    = symp[2*i:2*i+2, 2*j:2*j+2]
+        n_free -= n
+    return symp_embed
