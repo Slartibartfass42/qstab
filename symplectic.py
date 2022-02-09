@@ -4,15 +4,15 @@ import numpy as np
 # Returns the kth pair (e_k, f_k) of the standard symplectic basis.
 # k goes from 0 to n-1
 def get_std_basis_pair(k, n, GF):
-    e_k = np.zeros(2 * n, dtype=int).view(GF)
-    f_k = np.zeros(2 * n, dtype=int).view(GF)
+    e_k = GF.Zeros(2 * n)
+    f_k = GF.Zeros(2 * n)
     e_k[k] = 1
     f_k[k+1] = 1
     return (e_k, f_k)
 
 # Returns the (2n x 2n)-dimensional matrix defining the symplectic inner product.
 def get_inner_matrix(n, GF):
-    inner = np.zeros((2*n, 2*n), dtype=int).view(GF)
+    inner = GF.Zeros((2*n, 2*n))
     for i in range(0, 2*n, 2):
         inner[i + 1][i] = GF(0) - GF(1)
         inner[i][i+1] = 1
@@ -118,7 +118,7 @@ def get_group_order(n, GF):
 # Returns the radix representation of a given 0 <= k < |GF|^n as a list
 # with length n. The index of the list corresponds to the power of |GF|.
 def get_radix_repr(k, n, GF):
-    v = np.zeros(n, dtype=int).view(GF)
+    v = GF.Zeros(n)
     rem = k
     for i in reversed(range(n)):
         ord = GF.order**i
@@ -131,7 +131,7 @@ def find_symplectic_matrix(k, n, GF):
     s = GF.order**(2 * n) - 1
     u_seed = (k % s) + 1
     v_seed = (k // s) % GF.order**(2 * n - 1)
-    std_basis = np.identity(2 * n, dtype=int).view(GF)
+    std_basis = GF.Identity(2 * n)
     u = get_radix_repr(u_seed, 2 * n, GF)
     v_coeffs = get_radix_repr(v_seed, 2 * n - 1, GF)
     t1 = find_transvection(std_basis[0], u)
@@ -181,7 +181,7 @@ def embed_symplectic(s, n_embed, sites):
         raise RuntimeError \
             ("n of embedded symplectic may not be larger than n_embed!")
     GF = type(s)
-    s_embed = np.identity(2 * n_embed, dtype=int).view(GF)
+    s_embed = GF.Identity(2 * n_embed)
     for i in range(n):
         i_embed = sites[i]
         for j in range(n):

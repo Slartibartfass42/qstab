@@ -25,9 +25,9 @@ class Weyl:
         v = np.zeros(2 * n, dtype=int)
         for _ in range(weight):
             i = rand.randrange(0, 2 * n, 2)
-            pq = np.random.randint(0, GF.order, 2, dtype=int)
+            pq = GF.Random(2)
             while pq[0] == 0 and pq[1] == 0:
-                pq = np.random.randint(0, GF.order, 2, dtype=int)
+                pq = GF.Random(2)
             v[i:i+2] = pq
         return Weyl(v.view(GF))
 
@@ -60,7 +60,7 @@ class Clifford:
     # Returns the Clifford operator corresponding to the 2n x 2n identity operator.
     @staticmethod
     def identity(n, GF):
-        s = np.identity(2 * n, dtype=int).view(GF)
+        s = GF.Identity(2 * n)
         return Clifford(s)
 
     # Returns a randomly sampled Clifford operator.
