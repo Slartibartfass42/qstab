@@ -1,4 +1,5 @@
 import random as rand
+from winreg import HKEY_LOCAL_MACHINE
 import numpy as np
 
 # Returns the kth pair (e_k, f_k) of the standard symplectic basis.
