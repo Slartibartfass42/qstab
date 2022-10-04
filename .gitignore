@@ -1,3 +1,7 @@
-/__pycache__
+/qstab/__pycache__
+/notebooks
+/data
 main.py
 *.ipynb
+*.ipynb_checkpoints
+.DS_Store

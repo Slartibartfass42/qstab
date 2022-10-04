@@ -1,21 +1,22 @@
 import random as rand
 import numpy as np
 
+
 # Returns the kth pair (e_k, f_k) of the standard symplectic basis.
 # k goes from 0 to n-1
-def get_std_basis_pair(k, n, GF):
+def get_std_basis_pair(k: int, n: int, GF):
     e_k = GF.Zeros(2 * n)
     f_k = GF.Zeros(2 * n)
     e_k[k] = 1
     f_k[k+1] = 1
     return (e_k, f_k)
 
-# Returns the (2n x 2n)-dimensional matrix defining the symplectic inner product.
-def get_inner_matrix(n, GF):
+# Returns the (2nx2n)-dimensional matrix defining the symplectic inner product.
+def get_inner_matrix(n: int, GF):
     inner = GF.Zeros((2*n, 2*n))
     for i in range(0, 2*n, 2):
         inner[i + 1][i] = GF(0) - GF(1)
-        inner[i][i+1] = 1
+        inner[i][i+1] = GF(1)
     return inner
 
 # Evaluates the inner product between two 2*n-dimensional vectors
@@ -75,8 +76,8 @@ def find_transvection(v, w):
     for i in range(0, 2*n, 2):
         if (v[i] != 0 or v[i + 1] != 0) and (w[i] != 0 or w[i + 1] != 0):
             e_i, f_i = get_std_basis_pair(i, n, GF)
-            for k in GF.Elements():
-                for l in GF.Elements():
+            for k in GF.elements:
+                for l in GF.elements:
                     z = k * e_i + l * f_i
                     if eval_inner(v,z) != 0 and eval_inner(z,w) != 0:
                         t1 = find_single_transvection(v, z)
@@ -95,10 +96,10 @@ def find_transvection(v, w):
     
     e_i, f_i = get_std_basis_pair(i, n, GF)
     e_j, f_j = get_std_basis_pair(j, n, GF)
-    for k in GF.Elements():
-        for l in GF.Elements():
-            for m in GF.Elements():
-                for n in GF.Elements():
+    for k in GF.elements:
+        for l in GF.elements:
+            for m in GF.elements:
+                for n in GF.elements:
                     z = k * e_i + l * f_i + m * e_j + n * f_j
                     if eval_inner(v,z) != 0 and eval_inner(z,w) != 0:
                         t1 = find_single_transvection(v, z)
