@@ -36,6 +36,7 @@ class Weyl:
             v[i:i+2] = pq
         return Weyl(v.view(GF))
 
+    # Allows forming a tensor product of Weyl operators by using "+".
     def __add__(self, other):
         n_add = self.n + other.n
         v_add = self.GF.Zeros(2 * n_add)
