@@ -5,7 +5,7 @@ import numpy as np
 # Returns the kth pair (e_k, f_k) of the standard symplectic basis.
 # k goes from 0 to n-1
 def get_std_basis_pair(k: int, n: int, GF):
-    e_k = GF.Zeros(2 * n)
+    e_k = GF.Zeros(2 * n) 
     f_k = GF.Zeros(2 * n)
     e_k[k] = 1
     f_k[k+1] = 1
