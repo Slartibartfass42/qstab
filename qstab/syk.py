@@ -35,7 +35,7 @@ def extract_code_distance(bell_stab, n_aux, n_mc=0):
             for s in s_b_perms:
                 mut_inf = bell_stab.get_mutual_information(s, sites_a)
                 if mut_inf > 0:
-                    return d-1
+                    return d
         return -1
     else:
         d_max = n_aux // 2 + 1
@@ -45,9 +45,9 @@ def extract_code_distance(bell_stab, n_aux, n_mc=0):
             s_b_perm = rand.sample(sites_b, perm_size)
             mut_inf = bell_stab.get_mutual_information(sites_a, s_b_perm)
             if mut_inf > 0:
-                d_max = perm_size - 1
+                d_max = perm_size
                 iter = n_mc + 1
-                if d_max == 0:
+                if d_max == 1:
                     return 0
             iter -= 1
         return d_max
