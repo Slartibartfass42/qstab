@@ -6,6 +6,8 @@ from qstab.clifford import Weyl
 
 class Stabilizer:
 
+    # Constructs a new stabilizer object using a basis array of dimensions
+    # k x 2*n and a phase vector v of length 2*n. k <= n.
     def __init__(self, array, v):
         self.array = array
         self.v = v
@@ -14,14 +16,18 @@ class Stabilizer:
         self.n = len(v) // 2
         self.k = len(array)
 
+    # Returns the basis array as a list of Weyl operators.
     def get_basis(self):
         return list(map(lambda v: Weyl(v), self.array))
 
+    # Returns the space of all stabilizer elements as Weyl operators.
     def get_span(self):
         if self.span == None:
             self.span = misc.compute_span(self.array)
         return self.span
 
+    # Returns a stabilizer object with a canonical basis array of dimension
+    # k x n and zero phase vector v. k <= n.
     @staticmethod
     def std(n, k, GF):
         array_std = GF.Zeros((k, 2*n))
@@ -30,6 +36,8 @@ class Stabilizer:
         v_std = GF.Zeros(2 * n)
         return Stabilizer(array_std, v_std)
 
+    # Returns a stabilizer object with a random basis array of dimension
+    # k x n and random phase vector v. k <= n.
     @staticmethod
     def random(n, k, GF):
         array_rand = GF.Zeros((k, 2*n))
@@ -39,6 +47,11 @@ class Stabilizer:
         v_rand = GF.Random(2 * n)
         return Stabilizer(array_rand, v_rand)
 
+    # Returns a stabilizer object representing two parties sharing n_party
+    # maximally entangled qudits. The resulting basis array will have dimensions
+    # 2*n_party x 4*n_party, where the left half of columns "belongs" to one
+    # party and the right half "belongs" to the other. If random=True then a
+    # random Clifford is applied to the right half of the basis array.
     @staticmethod
     def bell_state(n_party, GF, random=False):
         n_bell = 2 * n_party
@@ -58,7 +71,7 @@ class Stabilizer:
 
         return Stabilizer(array_bell, v_bell)
 
-    # Tensor product of two stabilizer states
+    # Allows forming a tensor product of two stabilizer states using "+".
     def __add__(self, other):
         k_add = self.k + other.k
         n_add = self.n + other.n
@@ -70,10 +83,15 @@ class Stabilizer:
         v_add[2*self.n:2*n_add] = other.v
         return Stabilizer(array_add, v_add)
 
+    # Returns a stabilizer object with its basis array in reduced-row echelon
+    # form (RREF).
     def get_rref(self):
         array_rref = misc.compute_rref(self.array)
         return Stabilizer(array_rref, self.v)
 
+    # Permutes the pairs of columns representing one qudit site according to the
+    # permutation of [1, ..., n] provided in sites_perm. Note that n here must
+    # be half of the number of columns of the basis array.
     def permute_sites(self, sites_perm):
         if len(sites_perm) != self.n:
             raise RuntimeError("All sites have to be permutated!")
@@ -82,6 +100,8 @@ class Stabilizer:
         v_perm = self.v[index_perm]
         return Stabilizer(array_perm, v_perm)
 
+    # Returns the stabilizer object with the provided sites (pairs of column
+    # vectors) traced out. 
     def trace_out(self, *sites_traced):
         GF = self.GF
         n_traced = len(sites_traced)
@@ -102,16 +122,21 @@ class Stabilizer:
 
         return Stabilizer(array_traced, v_traced)
 
+    # Returns the number of stabilizers in the span of the basis array.
     def get_cardinality(self):
         d = self.GF.order
         return d**self.k
 
+    # Returns the (entanglement) entropy of the corresponding stabilizer state.
     def get_entropy(self):
         return self.n - self.k
 
+    # Returns the operator weights (number of non-identity Pauli operators) of
+    # the stabilizer basis.
     def get_weights(self):
         return list(map(lambda w: w.get_weight(), self.get_basis()))
 
+    # Returns the mutual information between two sets of sites of the Stabilizer. 
     def get_mutual_information(self, sites_a, sites_b):
         sites_ab = sorted(set().union(sites_a, sites_b))
         sites_compl = [i for i in range(self.n) if i not in sites_ab]
@@ -124,6 +149,9 @@ class Stabilizer:
             - state_ab.get_entropy()
         return mut_inf
 
+    # Applies a Clifford operator to the stabilizer object and returns the
+    # result. If specific sites are supplied, the Clifford will only be applied
+    # to those (given that the dimensions match).
     def apply_clifford(self, cliff, sites = []):
         if self.n == cliff.n:
             v_applied = cliff.symp @ self.v
